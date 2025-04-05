@@ -161,9 +161,17 @@ fun CartItem(
                         bottom.linkTo(parent.bottom)
                     }
                     .clickable {
-                        managementCart.minusItem(cartItems, cartItems.indexOf(item)) {onItemChange()}
-                        numberInCart--
-                        item.numberInCart = numberInCart
+                        if (numberInCart > 1) {
+                            managementCart.minusItem(cartItems, cartItems.indexOf(item)) {
+                                onItemChange()
+                            }
+                            numberInCart--
+                            item.numberInCart = numberInCart
+                        } else if (numberInCart == 1) {
+                            cartItems.removeAt(cartItems.indexOf(item))
+                            managementCart.removeItem(item)
+                            onItemChange()
+                        }
                     }
             ) {
                 Text(

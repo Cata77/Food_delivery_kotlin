@@ -55,4 +55,10 @@ class ManagmentCart(val context: Context) {
         }
         return fee
     }
+
+    fun removeItem(item: FoodModel) {
+        val listFood = getListCart()
+        val updatedList = listFood.filter { it.Title != item.Title } as ArrayList<FoodModel>
+        tinyDB.putListObject("CartList", updatedList)
+    }
 }

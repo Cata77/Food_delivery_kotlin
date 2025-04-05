@@ -2,8 +2,6 @@ package com.mobile.foodapp.Activity.Cart
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.mobile.foodapp.Activity.BaseActivity
 import com.mobile.foodapp.R
 import com.uilover.project2142.Helper.ManagmentCart
-import java.util.ArrayList
 
 class CartActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
