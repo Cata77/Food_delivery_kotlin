@@ -114,7 +114,7 @@ fun OrderItem(order: OrderModel) {
         )
         Text(
             text = "Date: ${order.orderDate}",
-            color = colorResource(R.color.grey)
+            color = colorResource(R.color.darkPurple)
         )
     }
 } 
