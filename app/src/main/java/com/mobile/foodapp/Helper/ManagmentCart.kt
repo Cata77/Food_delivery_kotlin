@@ -1,11 +1,9 @@
-package com.uilover.project2142.Helper
+package com.mobile.foodapp.Helper
 
 import android.content.Context
 import android.widget.Toast
 import com.mobile.foodapp.Domain.FoodModel
-import com.mobile.foodapp.Helper.TinyDB
-import com.uilover.project2142.Model.ChangeNumberItemsListener
-
+import com.mobile.foodapp.Model.ChangeNumberItemsListener
 
 class ManagmentCart(val context: Context) {
 
@@ -60,5 +58,9 @@ class ManagmentCart(val context: Context) {
         val listFood = getListCart()
         val updatedList = listFood.filter { it.Title != item.Title } as ArrayList<FoodModel>
         tinyDB.putListObject("CartList", updatedList)
+    }
+
+    fun clearCart() {
+        tinyDB.putListObject("CartList", ArrayList<FoodModel>())
     }
 }

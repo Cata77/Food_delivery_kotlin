@@ -34,6 +34,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mobile.foodapp.Domain.FoodModel;
+import com.mobile.foodapp.Domain.OrderModel;
 
 
 import java.io.File;
@@ -540,6 +541,28 @@ public class TinyDB {
         ArrayList<String> objStrings = new ArrayList<String>();
         for (FoodModel player : playerList) {
             objStrings.add(gson.toJson(player));
+        }
+        putListString(key, objStrings);
+    }
+
+    public ArrayList<OrderModel> getOrderListObject(String key) {
+        Gson gson = new Gson();
+        ArrayList<String> objStrings = getListString(key);
+        ArrayList<OrderModel> orderList = new ArrayList<OrderModel>();
+
+        for (String jObjString : objStrings) {
+            OrderModel order = gson.fromJson(jObjString, OrderModel.class);
+            orderList.add(order);
+        }
+        return orderList;
+    }
+
+    public void putOrderListObject(String key, ArrayList<OrderModel> orderList) {
+        checkForNullKey(key);
+        Gson gson = new Gson();
+        ArrayList<String> objStrings = new ArrayList<String>();
+        for (OrderModel order : orderList) {
+            objStrings.add(gson.toJson(order));
         }
         putListString(key, objStrings);
     }

@@ -12,8 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +32,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
 import com.mobile.foodapp.Domain.FoodModel
 import com.mobile.foodapp.R
-import com.uilover.project2142.Helper.ManagmentCart
+import com.mobile.foodapp.Helper.ManagmentCart
+import com.mobile.foodapp.Model.ChangeNumberItemsListener
 
 @Composable
 fun CartItem(
@@ -48,6 +50,12 @@ fun CartItem(
     ) {
         val (pic, titleTxt, feeEachTime, totalEachItem, quantity) = createRefs()
         var numberInCart by remember { mutableStateOf(item.numberInCart) }
+        
+        // Sync numberInCart with item.numberInCart
+        LaunchedEffect(item.numberInCart) {
+            numberInCart = item.numberInCart
+        }
+        
         val decimalFormat = DecimalFormat("#.00")
         Image(
             painter = rememberAsyncImagePainter(item.ImagePath),
@@ -114,7 +122,7 @@ fun CartItem(
                 }
         ) {
             val (plusCartBtn, minusCartBtn, numberItemText) = createRefs()
-            Text(text = item.numberInCart.toString(),
+            Text(text = numberInCart.toString(),
                 color = colorResource(R.color.darkPurple),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
@@ -136,9 +144,14 @@ fun CartItem(
                         bottom.linkTo(parent.bottom)
                     }
                     .clickable {
-                        managementCart.plusItem(cartItems, cartItems.indexOf(item)) {onItemChange()}
-                        numberInCart++
-                        item.numberInCart = numberInCart
+                        val listener = object : ChangeNumberItemsListener {
+                            override fun onChanged() {
+                                numberInCart++
+                                item.numberInCart = numberInCart
+                                onItemChange()
+                            }
+                        }
+                        managementCart.plusItem(cartItems, cartItems.indexOf(item), listener)
                     }
             ) {
                 Text(
@@ -162,11 +175,14 @@ fun CartItem(
                     }
                     .clickable {
                         if (numberInCart > 1) {
-                            managementCart.minusItem(cartItems, cartItems.indexOf(item)) {
-                                onItemChange()
+                            val listener = object : ChangeNumberItemsListener {
+                                override fun onChanged() {
+                                    numberInCart--
+                                    item.numberInCart = numberInCart
+                                    onItemChange()
+                                }
                             }
-                            numberInCart--
-                            item.numberInCart = numberInCart
+                            managementCart.minusItem(cartItems, cartItems.indexOf(item), listener)
                         } else if (numberInCart == 1) {
                             cartItems.removeAt(cartItems.indexOf(item))
                             managementCart.removeItem(item)

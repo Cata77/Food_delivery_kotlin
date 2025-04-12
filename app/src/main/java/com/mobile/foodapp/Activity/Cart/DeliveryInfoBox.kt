@@ -1,6 +1,6 @@
 package com.mobile.foodapp.Activity.Cart
 
-import android.widget.Button
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,15 +20,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mobile.foodapp.Domain.OrderModel
+import com.mobile.foodapp.Helper.ManagmentCart
+import com.mobile.foodapp.Helper.TinyDB
 import com.mobile.foodapp.R
+import java.util.UUID
 
 @Composable
-fun DeliveryInfoBox() {
+fun DeliveryInfoBox(managementCart: ManagmentCart) {
+    val context = LocalContext.current
+    val tinyDB = TinyDB(context)
+    val cartItems = managementCart.getListCart()
+    val totalAmount = managementCart.getTotalFee()
+
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -51,7 +61,25 @@ fun DeliveryInfoBox() {
     }
 
     Button(
-        onClick = {},
+        onClick = {
+            if (cartItems.isEmpty()) {
+                Toast.makeText(context, "Your cart is empty", Toast.LENGTH_SHORT).show()
+                return@Button
+            }
+
+            val orders = tinyDB.getOrderListObject("Orders") ?: ArrayList()
+            val newOrder = OrderModel(
+                orderId = UUID.randomUUID().toString(),
+                items = ArrayList(cartItems),
+                totalAmount = totalAmount,
+                deliveryAddress = "Arad",
+                paymentMethod = "Cash"
+            )
+            orders.add(newOrder)
+            tinyDB.putOrderListObject("Orders", orders)
+            managementCart.clearCart()
+            Toast.makeText(context, "Order placed successfully", Toast.LENGTH_SHORT).show()
+        },
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.orange)

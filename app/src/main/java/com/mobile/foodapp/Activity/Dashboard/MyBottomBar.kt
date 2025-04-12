@@ -1,10 +1,14 @@
 package com.mobile.foodapp.Activity.Dashboard
 
-
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
@@ -21,14 +25,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobile.foodapp.Activity.Cart.CartActivity
+import com.mobile.foodapp.Activity.Order.OrderActivity
 import com.mobile.foodapp.R
 
 @Composable
 @Preview
 fun MyBottomBar() {
-    val bottomMenuItemsList = prepareBottomMenu()
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf("Home") }
+    val bottomMenuItemsList = prepareBottomMenu()
 
     BottomAppBar(
         contentColor = colorResource(R.color.grey),
@@ -39,10 +44,10 @@ fun MyBottomBar() {
                 selected = (selectedItem == bottomMenuItem.label),
                 onClick = {
                     selectedItem = bottomMenuItem.label
-                    if (bottomMenuItem.label == "Cart") {
-                        context.startActivity(Intent(context, CartActivity::class.java))
-                    } else {
-                        Toast.makeText(context, bottomMenuItem.label, Toast.LENGTH_SHORT)
+                    when (bottomMenuItem.label) {
+                        "Cart" -> context.startActivity(Intent(context, CartActivity::class.java))
+                        "Order" -> context.startActivity(Intent(context, OrderActivity::class.java))
+                        else -> Toast.makeText(context, bottomMenuItem.label, Toast.LENGTH_SHORT).show()
                     }
                 },
                 icon = {
@@ -53,9 +58,7 @@ fun MyBottomBar() {
                             .size(24.dp))
                 }
             )
-
         }
-
     }
 }
 

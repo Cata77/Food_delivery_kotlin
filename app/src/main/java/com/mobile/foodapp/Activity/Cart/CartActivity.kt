@@ -23,8 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.mobile.foodapp.Activity.BaseActivity
+import com.mobile.foodapp.Helper.ManagmentCart
 import com.mobile.foodapp.R
-import com.uilover.project2142.Helper.ManagmentCart
+
 
 class CartActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +121,7 @@ fun CartScreen(managementCart: ManagmentCart=ManagmentCart(LocalContext.current)
             }
 
             item {
-                DeliveryInfoBox()
+                DeliveryInfoBox(managementCart)
             }
         }
     }
