@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobile.foodapp.Activity.Cart.CartActivity
 import com.mobile.foodapp.Activity.Order.OrderActivity
+import com.mobile.foodapp.Activity.Favorite.FavoriteActivity
 import com.mobile.foodapp.R
 
 @Composable
@@ -47,6 +48,7 @@ fun MyBottomBar() {
                     when (bottomMenuItem.label) {
                         "Cart" -> context.startActivity(Intent(context, CartActivity::class.java))
                         "Order" -> context.startActivity(Intent(context, OrderActivity::class.java))
+                        "Favorite" -> context.startActivity(Intent(context, FavoriteActivity::class.java))
                         else -> Toast.makeText(context, bottomMenuItem.label, Toast.LENGTH_SHORT).show()
                     }
                 },

@@ -567,6 +567,59 @@ public class TinyDB {
         putListString(key, objStrings);
     }
 
+    public ArrayList<FoodModel> getFavoriteListObject() {
+        Gson gson = new Gson();
+        ArrayList<String> objStrings = getListString("Favorites");
+        ArrayList<FoodModel> foodList = new ArrayList<FoodModel>();
+
+        for (String jObjString : objStrings) {
+            FoodModel food = gson.fromJson(jObjString, FoodModel.class);
+            foodList.add(food);
+        }
+        return foodList;
+    }
+
+    public void putFavoriteListObject(ArrayList<FoodModel> foodList) {
+        Gson gson = new Gson();
+        ArrayList<String> objStrings = new ArrayList<String>();
+        for (FoodModel food : foodList) {
+            objStrings.add(gson.toJson(food));
+        }
+        putListString("Favorites", objStrings);
+    }
+
+    public boolean isFavorite(FoodModel food) {
+        ArrayList<FoodModel> favorites = getFavoriteListObject();
+        for (FoodModel favorite : favorites) {
+            if (favorite.getId() == food.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void toggleFavorite(FoodModel food) {
+        ArrayList<FoodModel> favorites = getFavoriteListObject();
+        boolean isCurrentlyFavorite = false;
+        int indexToRemove = -1;
+
+        for (int i = 0; i < favorites.size(); i++) {
+            if (favorites.get(i).getId() == food.getId()) {
+                isCurrentlyFavorite = true;
+                indexToRemove = i;
+                break;
+            }
+        }
+
+        if (isCurrentlyFavorite) {
+            favorites.remove(indexToRemove);
+        } else {
+            favorites.add(food);
+        }
+
+        putFavoriteListObject(favorites);
+    }
+
     /**
      * Remove SharedPreferences item with 'key'
      *

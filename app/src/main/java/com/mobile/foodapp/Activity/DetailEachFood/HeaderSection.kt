@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
 import com.mobile.foodapp.Domain.FoodModel
+import com.mobile.foodapp.Helper.TinyDB
 import com.mobile.foodapp.R
 
 @Composable
@@ -30,6 +35,9 @@ fun HeaderSection(
     onIncrement: () -> Unit,
     onDecrement: () -> Unit
 ) {
+    val context = LocalContext.current
+    val tinyDB = remember { TinyDB(context) }
+    
     ConstraintLayout (
         modifier = Modifier
             .fillMaxSize()
@@ -72,10 +80,14 @@ fun HeaderSection(
             top.linkTo(parent.top)
             start.linkTo(parent.start)
         })
-        FavoriteButton(Modifier.constrainAs(fav) {
-            top.linkTo(parent.top)
-            end.linkTo(parent.end)
-        })
+        FavoriteButton(
+            onFavoriteClick = { tinyDB.toggleFavorite(item) },
+            isFavorite = tinyDB.isFavorite(item),
+            Modifier.constrainAs(fav) {
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+            }
+        )
         Text(
             text = item.Title,
             fontSize = 24.sp,
@@ -121,11 +133,17 @@ private fun BackButton(onClick: ()->Unit, modifier: Modifier=Modifier) {
 }
 
 @Composable
-private fun FavoriteButton(modifier: Modifier=Modifier) {
+private fun FavoriteButton(
+    onFavoriteClick: () -> Unit,
+    isFavorite: Boolean,
+    modifier: Modifier = Modifier
+) {
     Image(
         painter = painterResource(R.drawable.fav_icon),
         contentDescription = null,
+        colorFilter = if (isFavorite) ColorFilter.tint(Color.Red) else null,
         modifier = modifier
-            .padding(start = 16.dp, top = 48.dp)
+            .padding(end = 16.dp, top = 48.dp)
+            .clickable { onFavoriteClick() }
     )
 }
