@@ -174,19 +174,22 @@ fun CartItem(
                         bottom.linkTo(parent.bottom)
                     }
                     .clickable {
-                        if (numberInCart > 1) {
-                            val listener = object : ChangeNumberItemsListener {
-                                override fun onChanged() {
-                                    numberInCart--
-                                    item.numberInCart = numberInCart
-                                    onItemChange()
+                        val itemIndex = cartItems.indexOf(item)
+                        if (itemIndex != -1) {
+                            if (numberInCart > 1) {
+                                val listener = object : ChangeNumberItemsListener {
+                                    override fun onChanged() {
+                                        numberInCart--
+                                        item.numberInCart = numberInCart
+                                        onItemChange()
+                                    }
                                 }
+                                managementCart.minusItem(cartItems, itemIndex, listener)
+                            } else {
+                                managementCart.removeItem(item)
+                                cartItems.removeAt(itemIndex)
+                                onItemChange()
                             }
-                            managementCart.minusItem(cartItems, cartItems.indexOf(item), listener)
-                        } else if (numberInCart == 1) {
-                            cartItems.removeAt(cartItems.indexOf(item))
-                            managementCart.removeItem(item)
-                            onItemChange()
                         }
                     }
             ) {

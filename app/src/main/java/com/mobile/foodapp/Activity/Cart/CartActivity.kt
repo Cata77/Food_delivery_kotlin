@@ -10,9 +10,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -38,9 +41,14 @@ class CartActivity : BaseActivity() {
 
 @Composable
 fun CartScreen(managementCart: ManagmentCart=ManagmentCart(LocalContext.current), onBackClick:() -> Unit) {
-    val cartItem = remember { mutableStateOf(managementCart.getListCart()) }
+    var cartItems by remember { mutableStateOf(ArrayList(managementCart.getListCart())) }
+    var refreshTrigger by remember { mutableStateOf(0) }
     val tax = remember { mutableStateOf(0.0) }
-    calculatorCart(managementCart, tax)
+
+    LaunchedEffect(refreshTrigger) {
+        cartItems = ArrayList(managementCart.getListCart())
+        calculatorCart(managementCart, tax)
+    }
 
     LazyColumn (modifier = Modifier
         .fillMaxWidth()
@@ -69,10 +77,10 @@ fun CartScreen(managementCart: ManagmentCart=ManagmentCart(LocalContext.current)
                 )
             }
         }
-        if (cartItem.value.isEmpty()) {
+        if (cartItems.isEmpty()) {
             item {
                 Text(
-                    text = "Cat Is Empty",
+                    text = "Cart Is Empty",
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .fillMaxWidth(),
@@ -80,14 +88,13 @@ fun CartScreen(managementCart: ManagmentCart=ManagmentCart(LocalContext.current)
                 )
             }
         } else {
-            items(cartItem.value) {item ->
+            items(cartItems) { item ->
                 CartItem(
-                    cartItems = cartItem.value,
+                    cartItems = cartItems,
                     item = item,
                     managementCart = managementCart,
                     onItemChange = {
-                        calculatorCart(managementCart, tax)
-                        cartItem.value = ArrayList(managementCart.getListCart())
+                        refreshTrigger += 1
                     }
                 )
             }

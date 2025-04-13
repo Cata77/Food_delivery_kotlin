@@ -31,12 +31,14 @@ class ManagmentCart(val context: Context) {
         if (position < 0 || position >= listFood.size) return
         val currentCount = listFood[position].numberInCart
         if (currentCount <= 1) {
+            removeItem(listFood[position])
             listFood.removeAt(position)
+            listener.onChanged()
         } else {
             listFood[position].numberInCart = currentCount - 1
+            tinyDB.putListObject("CartList", listFood)
+            listener.onChanged()
         }
-        tinyDB.putListObject("CartList", listFood)
-        listener.onChanged()
     }
 
     fun plusItem(listFood: ArrayList<FoodModel>, position: Int, listener: ChangeNumberItemsListener) {
@@ -56,8 +58,8 @@ class ManagmentCart(val context: Context) {
 
     fun removeItem(item: FoodModel) {
         val listFood = getListCart()
-        val updatedList = listFood.filter { it.Title != item.Title } as ArrayList<FoodModel>
-        tinyDB.putListObject("CartList", updatedList)
+        listFood.removeIf { it.Title == item.Title }
+        tinyDB.putListObject("CartList", listFood)
     }
 
     fun clearCart() {
