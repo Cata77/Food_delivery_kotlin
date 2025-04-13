@@ -51,6 +51,7 @@ fun DeliveryInfoBox(managementCart: ManagmentCart) {
     val scope = rememberCoroutineScope()
     val orderRepository = remember { OrderRepository() }
     var isLoading by remember { mutableStateOf(false) }
+    val activity = context as? CartActivity
 
     Column (
         modifier = Modifier
@@ -100,6 +101,9 @@ fun DeliveryInfoBox(managementCart: ManagmentCart) {
                     // Clear cart
                     managementCart.clearCart()
                     Toast.makeText(context, "Order placed successfully", Toast.LENGTH_SHORT).show()
+                    
+                    // Return to home screen
+                    activity?.finish()
                 } else {
                     Toast.makeText(context, "Failed to place order. Please try again.", Toast.LENGTH_SHORT).show()
                 }
